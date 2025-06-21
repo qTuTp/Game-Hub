@@ -8,7 +8,28 @@ import { Gamepad2, TrendingUp, DollarSign, Star, ArrowRight, Loader2 } from "luc
 import Link from "next/link"
 import Image from "next/image"
 
-// HomePage component that shows featured games and latest news
+// --- Type definitions ---
+type Game = {
+  id: string
+  title: string
+  image: string
+  genre: string
+  platform: string
+  rating: number
+  price: number
+  originalPrice: number
+}
+
+type Article = {
+  id: string
+  title: string
+  excerpt: string
+  category: string
+  publishDate: string
+  sourceUrl: string
+}
+
+// --- HomePage component ---
 export default function HomePage() {
   // State to hold featured games data
   const [featuredGames, setFeaturedGames] = useState([])
@@ -29,7 +50,7 @@ export default function HomePage() {
     try {
       setLoading(true)
 
-      // Fetch featured games from the games API
+      // Fetch featured games from API
       const gamesResponse = await fetch("/api/games?page=1")
       if (gamesResponse.ok) {
         const gamesData = await gamesResponse.json()
@@ -41,9 +62,7 @@ export default function HomePage() {
       const newsResponse = await fetch("/api/news")
       if (newsResponse.ok) {
         const newsData = await newsResponse.json()
-        // Handle the new API response format that returns an object with articles array
         const articles = newsData.articles || newsData
-        // Take first 2 articles for homepage
         setLatestNews(Array.isArray(articles) ? articles.slice(0, 2) : [])
       }
     } catch (error) {

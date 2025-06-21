@@ -13,6 +13,19 @@ import Link from "next/link"
 import Image from "next/image"
 import { WishlistButton } from "@/components/wishlist-button"
 
+
+//  Game type definition
+type Game = {
+  id: string
+  title: string
+  image: string
+  genre: string
+  platform: string
+  rating: number
+  price: number
+  originalPrice: number
+}
+
 // Custom debounce hook
 function useDebounce(value: string, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value)
@@ -34,15 +47,16 @@ export default function GamesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedGenre, setSelectedGenre] = useState("all")
   const [selectedPlatform, setSelectedPlatform] = useState("all")
-  const [games, setGames] = useState([])
+  const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMoreGames, setHasMoreGames] = useState(true)
   const [isSearching, setIsSearching] = useState(false)
+  
 
-  // Debounce search term with 1.5 second delay
+  // Waits 1.5 seconds after the user stops typing before using the search term.
   const debouncedSearchTerm = useDebounce(searchTerm, 1500)
 
   useEffect(() => {
@@ -71,6 +85,7 @@ export default function GamesPage() {
     fetchGames(1, true)
   }, [debouncedSearchTerm, selectedGenre, selectedPlatform])
 
+  // Create a URLSearchParams object to build query parameters for the API request
   const fetchGames = async (page = 1, reset = false) => {
     try {
       if (reset) {
@@ -86,8 +101,10 @@ export default function GamesPage() {
       if (selectedPlatform !== "all") params.append("platforms", selectedPlatform)
       params.append("page", page.toString())
 
+      // Log the full query string to the console for debugging
       console.log("Fetching games with params:", params.toString())
 
+      // Send a fetch request to the backend API with the constructed query parameters
       const response = await fetch(`/api/games?${params}`)
 
       if (!response.ok) {
@@ -95,8 +112,9 @@ export default function GamesPage() {
         console.error("API response error:", response.status, errorText)
         throw new Error(`Failed to fetch games: ${response.status}`)
       }
-
+     // If successful, parse the JSON response data
       const data = await response.json()
+      // Log the received data for debugging
       console.log("Received games data:", data)
 
       // Ensure data is an array
