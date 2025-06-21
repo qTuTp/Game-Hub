@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { cheapSharkClient } from "@/lib/api-clients"
 
+// Handles fetching game deals from CheapShark API
+// and transforming them into a more structured format for the frontend.
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -10,14 +12,16 @@ export async function GET(request: Request) {
 
     console.log(`Fetching deals - Store: ${storeID || "all"}, Sort: ${sortBy}, Page: ${pageNumber}`)
 
+    // Prepare parameters for CheapShark API
     const params: any = {
       sortBy,
       desc: true,
-      pageSize: 60,
+      pageSize: 60, // limit to 60 deals per page
       pageNumber: Number.parseInt(pageNumber),
     }
 
-    // Only add storeID if it's specified and not "all"
+    // Apply store filter if provided
+    // If storeID is "all" or not provided, we fetch deals from all stores
     if (storeID && storeID !== "all") {
       params.storeID = storeID
       console.log(`Filtering by store ID: ${storeID}`)
@@ -25,17 +29,20 @@ export async function GET(request: Request) {
       console.log("Fetching deals from all stores")
     }
 
+    // Fetch deals and stores from CheapShark API
     const [deals, stores] = await Promise.all([cheapSharkClient.getDeals(params), cheapSharkClient.getStores()])
 
     console.log(`Received ${deals.length} deals from API for page ${pageNumber}`)
 
-    // Create store lookup
+    // Create a map of stores for quick lookup
+    // This will help us associate deals with their respective stores
     const storeMap = stores.reduce((acc: any, store: any) => {
       acc[store.storeID] = store
       return acc
     }, {})
 
-    // Transform and group deals by game
+    // Transform deals into a more structured format
+    // Group deals by game using a Map for better performance
     const gameDealsMap = new Map()
 
     deals.forEach((deal: any) => {
@@ -50,8 +57,8 @@ export async function GET(request: Request) {
         deal.gameID ||
         deal.title
           .toLowerCase()
-          .replace(/[^\w\s]/g, "")
-          .replace(/\s+/g, " ")
+          .replace(/[^\w\s]/g, "") // Remove special characters
+          .replace(/\s+/g, " ") // Replace multiple spaces with a single space
           .trim()
 
       const dealData = {
@@ -71,6 +78,7 @@ export async function GET(request: Request) {
         storeID: deal.storeID,
       }
 
+      // Check if the game already exists in the map
       if (gameDealsMap.has(gameIdentifier)) {
         // Add to existing game's deals
         gameDealsMap.get(gameIdentifier).deals.push(dealData)
@@ -87,15 +95,17 @@ export async function GET(request: Request) {
 
     console.log(`Grouped into ${gameDealsMap.size} unique games`)
 
-    // Process grouped deals to find best deals and sort alternatives
+    // Process the grouped deals to find the best deal for each game
+    // and prepare the final response format
     const transformedDeals = Array.from(gameDealsMap.values()).map((gameGroup: any) => {
-      // Sort deals by price (lowest first)
+      // Sort deals by sale price to find the best deal
       gameGroup.deals.sort((a: any, b: any) => a.salePrice - b.salePrice)
 
-      // Best deal is the cheapest one
+      // Best deal is the first one after sorting
       const bestDeal = gameGroup.deals[0]
 
-      // Alternative stores (excluding the best deal)
+      // Alternative stores are the next best deals
+      // Limit to 4 alternative stores
       const alternativeStores = gameGroup.deals
         .slice(1)
         .map((deal: any) => ({
@@ -106,7 +116,7 @@ export async function GET(request: Request) {
           url: deal.storeUrl,
           storeID: deal.storeID,
         }))
-        .slice(0, 4) // Show up to 4 alternative stores
+        .slice(0, 4) // Show only up to 4 alternative stores
 
       return {
         id: bestDeal.gameID || bestDeal.dealID,
@@ -126,7 +136,7 @@ export async function GET(request: Request) {
       }
     })
 
-    // Sort by discount or other criteria
+    // Sort by discount or sale price based on the sortBy parameter
     transformedDeals.sort((a, b) => {
       if (sortBy === "DealRating" || sortBy === "Savings") {
         return b.discount - a.discount
@@ -138,6 +148,8 @@ export async function GET(request: Request) {
 
     console.log(`Returning ${transformedDeals.length} transformed deals`)
 
+    // Return the transformed deals as JSON response
+    // This will be consumed by the frontend to display deals
     return NextResponse.json(transformedDeals)
   } catch (error) {
     console.error("Error fetching deals:", error)

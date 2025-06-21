@@ -62,6 +62,11 @@ const steamNewsClient = {
     }
   },
 
+  /**
+   * Fetches aggregated news from multiple popular Steam games.
+   * Processes in batches to avoid overwhelming the API.
+   * Returns all articles without limit, sorted by date (newest first).
+   */
   async getAggregatedNews() {
     const allNews = []
     const batchSize = 5 // Process games in batches to avoid overwhelming the API

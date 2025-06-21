@@ -17,6 +17,7 @@ import Link from "next/link"
 
 export default function ProfilePage() {
   const { user, updateProfile, logout } = useAuth()
+  // Profile information states
   const [isEditingName, setIsEditingName] = useState(false)
   const [name, setName] = useState("")
   const [isLoadingName, setIsLoadingName] = useState(false)
@@ -30,12 +31,14 @@ export default function ProfilePage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoadingPassword, setIsLoadingPassword] = useState(false)
 
+  // Load user name when component mounts or user changes
   useEffect(() => {
     if (user) {
       setName(user.name)
     }
   }, [user])
 
+  // Handle name update
   const handleSaveName = async () => {
     if (!user || !name.trim()) return
 
@@ -52,10 +55,11 @@ export default function ProfilePage() {
     }
   }
 
+  // Handle password change
   const handleChangePassword = async () => {
     if (!user || !auth.currentUser) return
 
-    // Validation
+    // Validation checks
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast.error("Please fill in all password fields")
       return
@@ -66,6 +70,7 @@ export default function ProfilePage() {
       return
     }
 
+    // Minimum length check
     if (newPassword.length < 8) {
       toast.error("New password must be at least 8 characters")
       return
@@ -109,7 +114,7 @@ export default function ProfilePage() {
       // Update password
       await updatePassword(auth.currentUser, newPassword)
 
-      // Clear form
+      // Clear form fields
       setCurrentPassword("")
       setNewPassword("")
       setConfirmPassword("")
@@ -129,6 +134,8 @@ export default function ProfilePage() {
     }
   }
 
+  // Handle logout
+  // This function handles user logout and displays a success message
   const handleLogout = async () => {
     try {
       await logout()
@@ -139,6 +146,7 @@ export default function ProfilePage() {
     }
   }
 
+  // If user is not logged in, show access denied message
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8">

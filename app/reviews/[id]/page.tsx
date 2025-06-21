@@ -15,10 +15,12 @@ export default function ReviewDetailPage({ params }: { params: { id: string } })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
+  // Fetch review when component mounts or ID changes
   useEffect(() => {
     fetchReview()
   }, [params.id])
 
+  // Function to fetch the review based on the ID from the URL
   const fetchReview = async () => {
     try {
       setLoading(true)
@@ -48,6 +50,8 @@ export default function ReviewDetailPage({ params }: { params: { id: string } })
     }
   }
 
+  // Function to render stars based on rating
+  // Uses a simple array to create 5 stars, filling them based on the rating
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -63,6 +67,7 @@ export default function ReviewDetailPage({ params }: { params: { id: string } })
     ))
   }
 
+  // If loading, show a loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
@@ -74,6 +79,7 @@ export default function ReviewDetailPage({ params }: { params: { id: string } })
     )
   }
 
+  // If there's an error or no review found, show an error message
   if (error || !review) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8">

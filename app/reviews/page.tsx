@@ -13,7 +13,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ReviewFavoriteButton } from "@/components/review-favorite-button"
 
-// Custom debounce hook
+// Custom debounce hook to delay search input processing
 function useDebounce(value: string, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value)
 
@@ -68,6 +68,7 @@ export default function ReviewsPage() {
     filterAndSortReviews()
   }, [reviews, sortBy])
 
+  // Fetch reviews from the API
   const fetchReviews = async (offset = 0, reset = false, search = "") => {
     try {
       if (reset) {
@@ -126,10 +127,12 @@ export default function ReviewsPage() {
     }
   }
 
+  // Load more reviews when the button is clicked
   const handleLoadMore = () => {
     fetchReviews(currentOffset, false, debouncedSearchTerm)
   }
 
+  // Filter and sort reviews based on the selected criteria
   const filterAndSortReviews = () => {
     // Ensure reviews is always an array
     if (!Array.isArray(reviews)) {
@@ -157,6 +160,7 @@ export default function ReviewsPage() {
     setFilteredReviews(filtered)
   }
 
+  // Handle search form submission
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Immediately trigger search on form submit
@@ -166,6 +170,8 @@ export default function ReviewsPage() {
     fetchReviews(0, true, searchTerm)
   }
 
+  // Render stars based on the rating
+  // Uses a simple star rating system with 5 stars
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star

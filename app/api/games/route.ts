@@ -1,12 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { rawgClient } from "@/lib/api-clients"
 
+// This API route fetches games from the RAWG API based on search parameters
+// and returns them in a standardized format for the frontend.
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const search = searchParams.get("search")
-    const genres = searchParams.get("genres")
-    const platforms = searchParams.get("platforms")
+    const search = searchParams.get("search") // Search term for games
+    const genres = searchParams.get("genres") // Filter by genres
+    const platforms = searchParams.get("platforms") // Filter by platforms
     const page = Number.parseInt(searchParams.get("page") || "1")
 
     console.log("Games API called with params:", { search, genres, platforms, page })
@@ -35,6 +37,7 @@ export async function GET(request: NextRequest) {
       params.platforms = platformMap[platforms] || platforms
     }
 
+    // Fetch games from the RAWG API
     const data = await rawgClient.getGames(params)
 
     if (!data || !data.results) {

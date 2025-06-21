@@ -16,14 +16,15 @@ export default function DealsPage() {
   const [currentPage, setCurrentPage] = useState(0)
   const [hasMoreDeals, setHasMoreDeals] = useState(true)
 
+  // Fetch deals when filters change or on initial load
   useEffect(() => {
-    // Reset pagination when filters change
     setCurrentPage(0)
     setDeals([])
     setHasMoreDeals(true)
     fetchDeals(0, true)
   }, [selectedStore, sortBy])
 
+  // Fetch deals from the API
   const fetchDeals = async (page = 0, reset = false) => {
     try {
       if (reset) {
@@ -50,7 +51,8 @@ export default function DealsPage() {
       if (reset) {
         setDeals(data)
       } else {
-        // Append new deals to existing ones, avoiding duplicates
+        // Append new deals to existing ones while avoiding duplicates
+        // Use a Set to track existing deal IDs for efficient duplicate checking
         setDeals((prevDeals) => {
           const existingIds = new Set(prevDeals.map((deal: any) => deal.id))
           const newDeals = data.filter((deal: any) => !existingIds.has(deal.id))
@@ -59,7 +61,7 @@ export default function DealsPage() {
       }
 
       // Check if we have more deals to load
-      // If we received fewer deals than expected, we've reached the end
+      // If the number of deals returned is less than 60, we assume there are no more deals
       setHasMoreDeals(data.length >= 60) // CheapShark returns 60 deals per page by default
     } catch (err) {
       setError("Failed to load deals. Please try again.")
@@ -70,12 +72,16 @@ export default function DealsPage() {
     }
   }
 
+  // Handle load more button click
+  // Increment the current page and fetch more deals
   const handleLoadMore = () => {
     const nextPage = currentPage + 1
     setCurrentPage(nextPage)
     fetchDeals(nextPage, false)
   }
 
+  // Handle retry button click in case of an error
+  // Reset the state and fetch deals again
   const handleRetry = () => {
     setCurrentPage(0)
     setDeals([])

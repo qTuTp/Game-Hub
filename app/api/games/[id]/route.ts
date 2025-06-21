@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { rawgClient } from "@/lib/api-clients"
 
+// This route handles fetching game details by ID from the RAWG API
+// and returns the data in a format suitable for our application.
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = await params;
@@ -12,7 +14,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
     } catch (error) {
       console.error(`RAWG API error for game ${id}:`, error)
 
-      // If it's a 404, return a proper 404 response
+      // Check if the error is a 404 Not Found
+      // and return a specific error message
       if (error instanceof Error && error.message.includes("404")) {
         return NextResponse.json(
           {
@@ -23,7 +26,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         )
       }
 
-      // For other errors, try to return a generic error
+      // For other errors, return a generic error response
       return NextResponse.json(
         {
           error: "Failed to fetch game",
@@ -33,7 +36,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
       )
     }
 
-    // Double-check that we have valid game data
+    // Check if gameData is valid
+    // and contains the necessary fields
     if (!gameData || !gameData.id) {
       console.log(`Invalid game data received for ID ${id}:`, gameData)
       return NextResponse.json(

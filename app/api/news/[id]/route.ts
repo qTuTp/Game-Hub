@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { steamNewsClient } from "@/lib/api-clients"
 
+// This route handles fetching a specific news article by its ID
+// The ID can be a string or a number, and we will try multiple ways to find the article
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = await params;
@@ -76,7 +78,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     console.log(`Found/Created article: ${article.title} (ID: ${article.gid})`)
 
-    // Transform the Steam news item to our format
+    // Transform the Steam news item to our standardized format
     const transformedArticle = {
       id: article.gid || id,
       title: article.title || "Untitled",

@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server"
 import { gameSpotClient } from "@/lib/api-clients"
 
+// This route handles fetching reviews from GameSpot API with enhanced image handling
+// and search functionality. It supports pagination with offset and limit parameters.
 export async function GET(request: Request) {
   try {
+    // Parse query parameters for pagination and search
+    // Default values: offset=0, limit=20, search=null
     const { searchParams } = new URL(request.url)
     const offset = searchParams.get("offset") || "0"
     const limit = searchParams.get("limit") || "20"
@@ -97,6 +101,8 @@ export async function GET(request: Request) {
           }
         }
         console.log(`Final game image for ${review.game?.name}:`, gameImage)
+        
+        // Return transformed review object
         return {
           id: review.id || `gamespot-${index}`,
           gameTitle: review.game?.name,

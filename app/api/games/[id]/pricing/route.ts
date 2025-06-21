@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { cheapSharkClient } from "@/lib/api-clients"
 
+// Get pricing data for a specific game by its RAWG ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = await params;
@@ -28,13 +29,14 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
     const stores = await cheapSharkClient.getStores()
 
-    // Create store lookup
+    // Create a map of stores for quick lookup
     const storeMap = stores.reduce((acc: any, store: any) => {
       acc[store.storeID] = store
       return acc
     }, {})
 
-    // Transform deals into store pricing data
+    // Transform deals into a more structured format
+    // Filter deals to find those that match the game title
     const pricingData = deals
       .filter((deal: any) => deal.title.toLowerCase().includes(gameTitle.toLowerCase()))
       .slice(0, 5) // Limit to top 5 deals
@@ -70,6 +72,7 @@ function getStoreIcon(storeName: string) {
   return "store"
 }
 
+// Function to get the color class for a store based on its name
 function getStoreColor(storeName: string) {
   const storeColors: { [key: string]: string } = {
     Steam: "bg-blue-600",
@@ -82,5 +85,5 @@ function getStoreColor(storeName: string) {
     Fanatical: "bg-yellow-600",
   }
 
-  return storeColors[storeName] || "bg-gray-600"
+  return storeColors[storeName] || "bg-gray-600" // Default color for unknown stores
 }
