@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       platform: game.platforms?.map((p: any) => p.platform.name).join(", ") || "Multiple Platforms",
       releaseDate: game.released || new Date().toISOString().split("T")[0],
       rating: game.rating || 0,
-      players: game.playtime ? `${game.playtime}h average` : "Unknown",
+      playTime: game.playtime ? `${game.playtime}h average` : "Unknown",
     }))
 
     console.log(`Returning ${transformedGames.length} games`)

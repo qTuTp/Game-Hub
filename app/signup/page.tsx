@@ -13,33 +13,33 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Gamepad2, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 
-export default function SignupPage() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
+export default function SignupPage() {  
+  const [name, setName] = useState("") // State to store the user's name input
+  const [email, setEmail] = useState("") // State to store the user's email input
+  const [password, setPassword] = useState("") // State to store the user's password input
+  const [confirmPassword, setConfirmPassword] = useState("") // State to store the user's confirm password input
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState("")
-  const { signup, isLoading } = useAuth()
-  const router = useRouter()
+  const { signup, isLoading } = useAuth() // Custom hook to access signup function and loading state from authentication logic
+  const router = useRouter()  // Next.js router object for navigating between pages
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
     if (!name || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields")
+      setError("Please fill in all fields") // Check if all fields are filled
       return
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match")
+      setError("Passwords do not match") // Check if password and confirm password match
       return
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters long")
+      setError("Password must be at least 8 characters long") // Check if password is at least 8 characters long
       return
     }
 
@@ -47,7 +47,7 @@ export default function SignupPage() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
     if (!passwordRegex.test(password)) {
       setError(
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)",
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)! Please try again.",
       )
       return
     }
@@ -68,21 +68,22 @@ export default function SignupPage() {
       "123456789",
     ]
     if (commonPasswords.includes(password.toLowerCase())) {
-      setError("Please choose a stronger password. Avoid common passwords.")
+      setError("Please choose a stronger password. Avoid common passwords.") 
       return
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address")
+      setError("Please enter a valid email address")   // Basic email format validation using regular expression
       return
     }
 
-    const success = await signup(name, email, password)
+    const success = await signup(name, email, password) 
+  // Call the signup function with user's name, email, and password
     if (success) {
       router.push("/")
     } else {
-      setError("An account with this email already exists")
+      setError("An account with this email already exists") 
     }
   }
 

@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Gamepad2, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 
+// This component manages the login form state, handles authentication with a custom hook, and redirects users upon successful login.
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -21,8 +22,9 @@ export default function LoginPage() {
   const { login, isLoading } = useAuth()
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => { 
+    e.preventDefault() 
     setError("")
 
     if (!email || !password) {
