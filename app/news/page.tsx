@@ -10,6 +10,7 @@ import { Calendar, Clock, User, Search, Filter, Loader2, ExternalLink } from "lu
 import Link from "next/link"
 import { NewsFavoriteButton } from "@/components/news-favorite-button"
 
+// Define TypeScript interface for news article structure
 interface NewsArticle {
   id: string
   title: string
@@ -26,19 +27,26 @@ interface NewsArticle {
 }
 
 export default function NewsPage() {
+  // State for all news articles
   const [articles, setArticles] = useState<NewsArticle[]>([])
+  // Loading state to show loader while fetching
   const [loading, setLoading] = useState(true)
+  // Search term for filtering
   const [searchTerm, setSearchTerm] = useState("")
+  // Selected category for filtering
   const [selectedCategory, setSelectedCategory] = useState("all")
+  // Sort type: newest, oldest, title, author
   const [sortBy, setSortBy] = useState("newest")
 
+  // Fetch articles from the API when component mounts
   useEffect(() => {
     fetchNews()
   }, [])
 
+  // Function to fetch articles from /api/news
   const fetchNews = async () => {
     try {
-      setLoading(true)
+      setLoading(true) // Show loader
       const response = await fetch("/api/news")
       if (!response.ok) {
         throw new Error("Failed to fetch news")
@@ -49,26 +57,29 @@ export default function NewsPage() {
       console.error("Error fetching news:", error)
       setArticles([]) // Set empty array on error
     } finally {
-      setLoading(false)
+      setLoading(false) // Hide loader
     }
   }
 
-  // Get unique categories
+  // Extract unique categories from articles for filter dropdown
   const categories = Array.from(new Set(articles.map((article) => article.category))).sort()
 
-  // Filter and sort articles
+  // Filter and sort the articles list
   const filteredAndSortedArticles = articles
     .filter((article) => {
+      // Match search terms in title, excerpt, or author
       const matchesSearch =
         article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
         article.author.toLowerCase().includes(searchTerm.toLowerCase())
 
+      // Match selected category
       const matchesCategory = selectedCategory === "all" || article.category === selectedCategory
 
       return matchesSearch && matchesCategory
     })
     .sort((a, b) => {
+      // Sort logic based on selected sort type
       switch (sortBy) {
         case "oldest":
           return new Date(a.publishDate).getTime() - new Date(b.publishDate).getTime()

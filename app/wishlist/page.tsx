@@ -29,7 +29,9 @@ import { useAuth } from "@/contexts/auth-context"
 import { useToast } from "@/hooks/use-toast"
 
 export default function WishlistPage() {
+  // Get current user info from auth context
   const { user } = useAuth()
+  // Destructure all wishlist-related state and methods
   const {
     wishlist,
     favoriteNews,
@@ -45,12 +47,14 @@ export default function WishlistPage() {
     clearFavoriteReviews,
     isLoading,
   } = useWishlist()
+  // State to manage sorting and filtering
   const [sortBy, setSortBy] = useState("dateAdded")
   const [filterBy, setFilterBy] = useState("all")
   const [isClearing, setIsClearing] = useState(false)
+  // Toast utility for showing user messages
   const { toast } = useToast()
 
-  // Add this right after the existing hooks
+  // Show sign-in prompt if user is not authenticated
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8">
@@ -79,19 +83,13 @@ export default function WishlistPage() {
     )
   }
 
-  // Get unique genres for filtering games
+  // Extract unique category/platforms/genre for filter dropdowns
   const genres = Array.from(new Set(wishlist.map((game) => game.genre))).sort()
-
-  // Get unique categories for filtering news
   const newsCategories = Array.from(new Set(favoriteNews.map((article) => article.category))).sort()
-
-  // Get unique platforms for filtering deals
   const dealPlatforms = Array.from(new Set(favoriteDeals.map((deal) => deal.platform))).sort()
-
-  // Get unique genres for filtering reviews
   const reviewGenres = Array.from(new Set(favoriteReviews.map((review) => review.genre))).sort()
 
-  // Filter and sort wishlist
+  // Filter and sort games in wishlist
   const filteredAndSortedWishlist = wishlist
     .filter((game) => {
       if (filterBy === "all") return true
@@ -175,6 +173,7 @@ export default function WishlistPage() {
       }
     })
 
+  // The function is used to remove an individual game from the user's wishlist
   const handleRemoveFromWishlist = async (gameId: string) => {
     try {
       await removeFromWishlist(gameId)
@@ -191,6 +190,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function is used to remove an individual article from the user's favorite news
   const handleRemoveFromFavoriteNews = async (articleId: string) => {
     try {
       await removeFromFavoriteNews(articleId)
@@ -207,6 +207,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function is used to remove an individual deal from the user's favorite deals
   const handleRemoveFromFavoriteDeals = async (dealId: string) => {
     try {
       await removeFromFavoriteDeals(dealId)
@@ -223,6 +224,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function is used to remove an individual review from the user's favorite reviews
   const handleRemoveFromFavoriteReviews = async (reviewId: string) => {
     try {
       await removeFromFavoriteReviews(reviewId)
@@ -239,6 +241,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function is used to clear all games from the user's wishlist
   const handleClearWishlist = async () => {
     if (wishlist.length === 0) return
 
@@ -260,6 +263,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function is used to clear all favorite news articles
   const handleClearFavoriteNews = async () => {
     if (favoriteNews.length === 0) return
 
@@ -281,6 +285,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function is used to clear all favorite deals
   const handleClearFavoriteDeals = async () => {
     if (favoriteDeals.length === 0) return
 
@@ -302,6 +307,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function is used to clear all favorite reviews
   const handleClearFavoriteReviews = async () => {
     if (favoriteReviews.length === 0) return
 
@@ -323,6 +329,7 @@ export default function WishlistPage() {
     }
   }
 
+  // The function returns the Tailwind background color class for a specific platform
   const getPlatformColor = (platform: string) => {
     switch (platform.toLowerCase()) {
       case "steam":

@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
+// Define global metadata for the entire application
 export const metadata: Metadata = {
   title: "GameHub - Your Ultimate Gaming Destination",
   description: "Discover games, read reviews, find deals, and stay updated with the latest gaming news",

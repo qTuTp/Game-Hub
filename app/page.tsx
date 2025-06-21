@@ -8,15 +8,23 @@ import { Gamepad2, TrendingUp, DollarSign, Star, ArrowRight, Loader2 } from "luc
 import Link from "next/link"
 import Image from "next/image"
 
+// HomePage component that shows featured games and latest news
 export default function HomePage() {
+  // State to hold featured games data
   const [featuredGames, setFeaturedGames] = useState([])
+
+  // State to hold latest news articles
   const [latestNews, setLatestNews] = useState([])
+
+  // Loading state to indicate when data is being fetched
   const [loading, setLoading] = useState(true)
 
+  // Fetch content when the component is mounted
   useEffect(() => {
     fetchFeaturedContent()
   }, [])
 
+  // Fetch featured games and latest news
   const fetchFeaturedContent = async () => {
     try {
       setLoading(true)
@@ -25,11 +33,11 @@ export default function HomePage() {
       const gamesResponse = await fetch("/api/games?page=1")
       if (gamesResponse.ok) {
         const gamesData = await gamesResponse.json()
-        // Take first 3 games as featured
+        // Only use the first 3 games for homepage display
         setFeaturedGames(gamesData.slice(0, 3))
       }
 
-      // Fetch latest news
+      // Fetch latest news articles from the news API
       const newsResponse = await fetch("/api/news")
       if (newsResponse.ok) {
         const newsData = await newsResponse.json()
@@ -39,8 +47,10 @@ export default function HomePage() {
         setLatestNews(Array.isArray(articles) ? articles.slice(0, 2) : [])
       }
     } catch (error) {
+      // Log any fetch errors to the console
       console.error("Error fetching featured content:", error)
     } finally {
+      // Turn off loading state whether successful or failed
       setLoading(false)
     }
   }
