@@ -300,7 +300,7 @@ export default function GamesPage() {
                     </div>
                     <div className="flex items-center text-sm text-gray-400">
                       <Users className="h-4 w-4 mr-2" />
-                      {game.players}
+                      {game.playTime || "N/A"} 
                     </div>
                     <div className="text-sm text-gray-400">{game.platform}</div>
                   </div>

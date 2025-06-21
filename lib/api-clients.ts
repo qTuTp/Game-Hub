@@ -1,12 +1,14 @@
 // API client configurations and helper functions
 
 export const API_KEYS = {
-  RAWG: "a34537b06d064e15aa94b3b864aab84b",
-  OPENCRITICS: "2b9eb833e4msh97ab3659db850b6p167bd5jsnc51f345f5a90",
-  GIANTBOMB: "25f6e39909625e33b686c703f4658c91a27810cd",
-  GAMESPOT: "78f054f2863ccd08254d9a6f6c62377eb8ad997c",
-  // CheapShark doesn't require an API key
+  RAWG: "a34537b06d064e15aa94b3b864aab84b", //For Game Info
+  OPENCRITICS: "2b9eb833e4msh97ab3659db850b6p167bd5jsnc51f345f5a90", //Abandon
+  GIANTBOMB: "25f6e39909625e33b686c703f4658c91a27810cd", //Abandon
+  GAMESPOT: "78f054f2863ccd08254d9a6f6c62377eb8ad997c", //For Reviews
+  // CheapShark, no API key required. For pricing info
+  // ISteamNews, no API key required. For gaming news info
 }
+
 
 export const API_ENDPOINTS = {
   RAWG: "https://api.rawg.io/api",
@@ -16,11 +18,12 @@ export const API_ENDPOINTS = {
   GAMESPOT: "https://www.gamespot.com/api",
 }
 
-// RAWG API client
+// RAWG API Class that handle RAWG API Call
 export class RAWGClient {
   private baseUrl = API_ENDPOINTS.RAWG
   private apiKey = API_KEYS.RAWG
 
+  // Get Multiple Game from RAWG
   async getGames(
     params: {
       search?: string
@@ -42,6 +45,7 @@ export class RAWGClient {
     return response.json()
   }
 
+  // Get Specific Game Details from RAWG
   async getGame(id: string) {
     console.log(`Making RAWG API request for game ID: ${id}`)
 
@@ -70,6 +74,7 @@ export class RAWGClient {
     return data
   }
 
+  // Get Image for the Specific GAme
   async getGameScreenshots(id: string) {
     const response = await fetch(`${this.baseUrl}/games/${id}/screenshots?key=${this.apiKey}`)
     if (!response.ok) {
@@ -81,32 +86,32 @@ export class RAWGClient {
 
 }
 
-// OpenCritics API client
-export class OpenCriticsClient {
-  private baseUrl = API_ENDPOINTS.OPENCRITICS
-  private headers = {
-    "X-RapidAPI-Key": API_KEYS.OPENCRITICS,
-    "X-RapidAPI-Host": "opencritic-api.p.rapidapi.com",
-  }
+// OpenCritics API client |Abandon
+// export class OpenCriticsClient {
+//   private baseUrl = API_ENDPOINTS.OPENCRITICS
+//   private headers = {
+//     "X-RapidAPI-Key": API_KEYS.OPENCRITICS,
+//     "X-RapidAPI-Host": "opencritic-api.p.rapidapi.com",
+//   }
 
-  async getGameReviews(gameId: string) {
-    const response = await fetch(`${this.baseUrl}/game/${gameId}`, {
-      headers: this.headers,
-    })
-    if (!response.ok) throw new Error("Failed to fetch reviews")
-    return response.json()
-  }
+//   async getGameReviews(gameId: string) {
+//     const response = await fetch(`${this.baseUrl}/game/${gameId}`, {
+//       headers: this.headers,
+//     })
+//     if (!response.ok) throw new Error("Failed to fetch reviews")
+//     return response.json()
+//   }
 
-  async searchGame(name: string) {
-    const response = await fetch(`${this.baseUrl}/game/search?criteria=${encodeURIComponent(name)}`, {
-      headers: this.headers,
-    })
-    if (!response.ok) throw new Error("Failed to search game")
-    return response.json()
-  }
-}
+//   async searchGame(name: string) {
+//     const response = await fetch(`${this.baseUrl}/game/search?criteria=${encodeURIComponent(name)}`, {
+//       headers: this.headers,
+//     })
+//     if (!response.ok) throw new Error("Failed to search game")
+//     return response.json()
+//   }
+// }
 
-// GameSpot API client with rate limiting and better error handling
+// GameSpot API Class for Retreiving Game Reviews
 export class GameSpotClient {
   private baseUrl = API_ENDPOINTS.GAMESPOT
   private apiKey = API_KEYS.GAMESPOT
@@ -115,6 +120,7 @@ export class GameSpotClient {
   private cache = new Map<string, { data: any; timestamp: number }>()
   private cacheTimeout = 10 * 60 * 1000 // 10 minutes
 
+  // Functions to reduce API request
   private async delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
@@ -132,6 +138,7 @@ export class GameSpotClient {
     this.lastRequestTime = Date.now()
   }
 
+  // Get data from cache 
   private getCachedData(key: string) {
     const cached = this.cache.get(key)
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -141,11 +148,12 @@ export class GameSpotClient {
     return null
   }
 
+  // Save data to cache so no need to make API frequent
   private setCachedData(key: string, data: any) {
     this.cache.set(key, { data, timestamp: Date.now() })
   }
 
-
+  // Get GameSpot Reviews with filter
   async getReviews(params: { limit?: number; offset?: number; filter?: string } = {}) {
     const cacheKey = `reviews_${params.limit || 20}_${params.offset || 0}_${params.filter || "none"}`
     const cached = this.getCachedData(cacheKey)
@@ -339,7 +347,7 @@ export class GameSpotClient {
   }
 }
 
-// Steam News API client with rate limiting and better error handling
+// Steam News API Class with function for fetching news
 export class SteamNewsClient {
   private baseUrl = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2"
   private lastRequestTime = 0
@@ -524,56 +532,56 @@ export class CheapSharkClient {
   }
 }
 
-// Giant Bomb API client 
-export class GiantBombClient {
-  private baseUrl = API_ENDPOINTS.GIANTBOMB
-  private apiKey = API_KEYS.GIANTBOMB
+// Giant Bomb API client | Abandon
+// export class GiantBombClient {
+//   private baseUrl = API_ENDPOINTS.GIANTBOMB
+//   private apiKey = API_KEYS.GIANTBOMB
 
 
 
-  async getReviews() {
-    console.log("Making Giant Bomb API request for reviews...")
+//   async getReviews() {
+//     console.log("Making Giant Bomb API request for reviews...")
 
-    const url = `${this.baseUrl}/reviews/?api_key=${this.apiKey}&format=json&limit=10&sort=publish_date:desc`
+//     const url = `${this.baseUrl}/reviews/?api_key=${this.apiKey}&format=json&limit=10&sort=publish_date:desc`
 
-    try {
-      const response = await fetch(url, {
-        headers: {
-          "User-Agent": "GameHub/1.0",
-          Accept: "application/json",
-        },
-      })
+//     try {
+//       const response = await fetch(url, {
+//         headers: {
+//           "User-Agent": "GameHub/1.0",
+//           Accept: "application/json",
+//         },
+//       })
 
-      console.log(`Giant Bomb Reviews API response status: ${response.status}`)
+//       console.log(`Giant Bomb Reviews API response status: ${response.status}`)
 
-      if (!response.ok) {
-        console.error(`Giant Bomb Reviews API error: ${response.status} ${response.statusText}`)
-        throw new Error(`Failed to fetch reviews: ${response.status} ${response.statusText}`)
-      }
+//       if (!response.ok) {
+//         console.error(`Giant Bomb Reviews API error: ${response.status} ${response.statusText}`)
+//         throw new Error(`Failed to fetch reviews: ${response.status} ${response.statusText}`)
+//       }
 
-      const data = await response.json()
-      console.log("Giant Bomb Reviews API response:", {
-        error: data.error,
-        results_count: data.results?.length || 0,
-        status_code: data.status_code,
-      })
+//       const data = await response.json()
+//       console.log("Giant Bomb Reviews API response:", {
+//         error: data.error,
+//         results_count: data.results?.length || 0,
+//         status_code: data.status_code,
+//       })
 
-      if (data.error !== "OK") {
-        throw new Error(`Giant Bomb Reviews API error: ${data.error}`)
-      }
+//       if (data.error !== "OK") {
+//         throw new Error(`Giant Bomb Reviews API error: ${data.error}`)
+//       }
 
-      return data
-    } catch (error) {
-      console.error("Giant Bomb API request failed:", error)
-      throw error
-    }
-  }
-}
+//       return data
+//     } catch (error) {
+//       console.error("Giant Bomb API request failed:", error)
+//       throw error
+//     }
+//   }
+// }
 
 // Initialize clients
 export const rawgClient = new RAWGClient()
-export const openCriticsClient = new OpenCriticsClient()
+// export const openCriticsClient = new OpenCriticsClient()
 export const cheapSharkClient = new CheapSharkClient()
-export const giantBombClient = new GiantBombClient()
+// export const giantBombClient = new GiantBombClient()
 export const gameSpotClient = new GameSpotClient()
 export const steamNewsClient = new SteamNewsClient()

@@ -13,6 +13,7 @@ import { StarIcon } from "lucide-react"
 import { WishlistButton } from "@/components/wishlist-button"
 
 export default function GameDetailPage({ params }: { params: { id: string } }) {
+  const id = params.id
   const [game, setGame] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -20,7 +21,7 @@ export default function GameDetailPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     fetchGame()
-  }, [params.id])
+  }, [id])
 
   const fetchGame = async () => {
     try {
@@ -28,8 +29,8 @@ export default function GameDetailPage({ params }: { params: { id: string } }) {
       setError("")
       setErrorDetails("")
 
-      console.log(`Fetching game with ID: ${params.id}`)
-      const response = await fetch(`/api/games/${params.id}`)
+      console.log(`Fetching game with ID: ${id}`)
+      const response = await fetch(`/api/games/${id}`)
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
@@ -38,7 +39,7 @@ export default function GameDetailPage({ params }: { params: { id: string } }) {
           setError("Game Not Found")
           setErrorDetails(
             errorData.message ||
-              `The game with ID ${params.id} could not be found in our database. It may have been removed or the ID might be incorrect.`,
+              `The game with ID ${id} could not be found in our database. It may have been removed or the ID might be incorrect.`,
           )
         } else {
           setError("Failed to Load Game")
@@ -53,7 +54,7 @@ export default function GameDetailPage({ params }: { params: { id: string } }) {
       // Fetch real pricing data from CheapShark API
       let pricingData = []
       try {
-        const pricingResponse = await fetch(`/api/games/${params.id}/pricing`)
+        const pricingResponse = await fetch(`/api/games/${id}/pricing`)
         if (pricingResponse.ok) {
           pricingData = await pricingResponse.json()
         }
@@ -301,7 +302,7 @@ export default function GameDetailPage({ params }: { params: { id: string } }) {
             {/* Wishlist Button */}
             <WishlistButton
               game={{
-                id: String(params.id), // Ensure consistent string ID format
+                id: String(id), // Ensure consistent string ID format
                 title: game.title,
                 image: game.image || "/placeholder.svg",
                 price: game.price || "Free",
