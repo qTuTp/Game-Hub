@@ -535,7 +535,6 @@ export default function WishlistPage() {
 
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg font-bold text-green-400">{game.price}</span>
                             {game.originalPrice && game.originalPrice !== game.price && (
                               <span className="text-sm text-gray-500 line-through">{game.originalPrice}</span>
                             )}
@@ -877,12 +876,6 @@ export default function WishlistPage() {
                           <div className="flex items-center text-sm text-gray-400">
                             <Percent className="h-4 w-4 mr-1 text-red-400" />
                             Save ${(deal.originalPrice - deal.salePrice).toFixed(2)}
-                          </div>
-                          <div className="text-sm text-gray-400">
-                            {Math.ceil(
-                              (new Date(deal.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
-                            )}
-                            d left
                           </div>
                         </div>
 

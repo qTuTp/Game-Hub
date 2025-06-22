@@ -28,7 +28,6 @@ interface Deal {
   storeUrl: string
   image: string
   rating: number
-  endDate: string
   genre: string
   drm: string
   alternativeStores: AlternativeStore[]
@@ -42,13 +41,7 @@ interface DealCardProps {
 export function DealCard({ deal }: DealCardProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
-  const getDaysRemaining = (endDate: string) => {
-    const end = new Date(endDate)
-    const now = new Date()
-    const diffTime = end.getTime() - now.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays
-  }
+
 
   const getPlatformColor = (platform: string) => {
     switch (platform.toLowerCase()) {
@@ -67,29 +60,7 @@ export function DealCard({ deal }: DealCardProps) {
     }
   }
 
-  const daysRemaining = getDaysRemaining(deal.endDate)
-
-  // Mock alternative stores data for testing
-  const mockAlternativeStores = [
-    {
-      name: "Steam",
-      price: "$24.99",
-      originalPrice: "$39.99",
-      discount: 38,
-      url: "https://store.steampowered.com",
-      storeID: "1",
-    },
-    {
-      name: "Epic Games Store",
-      price: "$26.49",
-      originalPrice: "$39.99",
-      discount: 34,
-      url: "https://store.epicgames.com",
-      storeID: "25",
-    },
-  ]
-
-  const alternativeStores = deal.alternativeStores?.length > 0 ? deal.alternativeStores : mockAlternativeStores
+  const alternativeStores = deal.alternativeStores
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
@@ -115,12 +86,7 @@ export function DealCard({ deal }: DealCardProps) {
               {deal.totalDeals} stores
             </Badge>
           )}
-          {daysRemaining <= 3 && (
-            <Badge className="absolute bottom-2 left-2 bg-orange-600 animate-pulse">
-              <Clock className="h-3 w-3 mr-1" />
-              {daysRemaining}d left
-            </Badge>
-          )}
+
         </div>
       </CardHeader>
       <CardContent className="p-4">
@@ -145,9 +111,7 @@ export function DealCard({ deal }: DealCardProps) {
             <Percent className="h-4 w-4 mr-1 text-red-400" />
             Save ${((deal.originalPrice || 0) - (deal.salePrice || 0)).toFixed(2)}
           </div>
-          <div className="text-sm text-gray-400">
-            Ends {deal.endDate ? new Date(deal.endDate).toLocaleDateString() : "N/A"}
-          </div>
+          
         </div>
 
         <div className="space-y-2">
@@ -167,7 +131,7 @@ export function DealCard({ deal }: DealCardProps) {
           </div>
 
           {/* Custom Dropdown for Alternative Stores */}
-          <div className="mt-2 border-t border-slate-700 pt-2">
+          {deal.alternativeStores.length > 0 && (<div className="mt-2 border-t border-slate-700 pt-2">
             <button
               onClick={toggleDropdown}
               className="w-full flex items-center justify-between p-3 text-sm text-gray-400 hover:text-white hover:bg-slate-700/50 rounded-lg border border-slate-600 hover:border-slate-500 transition-all duration-200"
@@ -205,7 +169,7 @@ export function DealCard({ deal }: DealCardProps) {
                 ))}
               </div>
             )}
-          </div>
+          </div>)}
         </div>
       </CardContent>
     </Card>

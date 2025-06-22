@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore"
 import { db } from "./firebase"
 
-// User Profile Types
+// User Profile Schema
 export interface UserProfile {
   uid: string
   name: string
@@ -30,13 +30,13 @@ export interface UserProfile {
   }
 }
 
-// Wishlist Types
+// Game Favorite Schema
 export interface WishlistGame {
   id: string
   title: string
   image: string
-  price: string
-  originalPrice?: string
+  price: number
+  originalPrice?: number
   discount?: number
   rating: number
   genre: string
@@ -45,7 +45,7 @@ export interface WishlistGame {
   addedAt: any
 }
 
-// Favorite News Article Types
+// Favorite News Schema
 export interface FavoriteNewsArticle {
   id: string
   title: string
@@ -61,7 +61,7 @@ export interface FavoriteNewsArticle {
   addedAt: any
 }
 
-// Favorite Deal Types
+// Favorite Deal Schema
 export interface FavoriteDeal {
   id: string
   title: string
@@ -79,7 +79,7 @@ export interface FavoriteDeal {
   addedAt: any
 }
 
-// Favorite Review Types
+// Favorite Review Schema
 export interface FavoriteReview {
   id: string
   reviewTitle: string
@@ -162,7 +162,7 @@ export const updateUserProfile = async (uid: string, updates: Partial<UserProfil
   }
 }
 
-// Wishlist Functions
+// Favorite Functions
 export const getUserWishlist = async (uid: string): Promise<WishlistGame[]> => {
   try {
     const wishlistRef = collection(db, "users", uid, "wishlist")
@@ -188,7 +188,7 @@ export const addToWishlist = async (uid: string, game: Omit<WishlistGame, "added
       id: game.id || "",
       title: game.title || "",
       image: game.image || "",
-      price: game.price || "Free",
+      price: game.price || null,
       originalPrice: game.originalPrice || null,
       discount: game.discount || null,
       rating: game.rating || 0,

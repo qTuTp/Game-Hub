@@ -72,7 +72,6 @@ export async function GET(request: Request) {
         storeUrl: `https://www.cheapshark.com/redirect?dealID=${deal.dealID}`,
         image: deal.thumb || "/placeholder.svg?height=300&width=400",
         rating: Number.parseFloat(deal.steamRatingPercent || "0") / 20, // Convert to 5-star scale
-        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
         genre: "Game",
         drm: store?.storeName || "Unknown",
         storeID: deal.storeID,
@@ -128,7 +127,6 @@ export async function GET(request: Request) {
         storeUrl: bestDeal.storeUrl,
         image: bestDeal.image,
         rating: bestDeal.rating,
-        endDate: bestDeal.endDate,
         genre: bestDeal.genre,
         drm: bestDeal.drm,
         alternativeStores,

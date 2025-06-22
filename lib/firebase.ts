@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { getAnalytics } from "firebase/analytics"
 
-// Your web app's Firebase configuration
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyC9_b5zObiw3aOzTUSbIS6qoswbHzilrQw",
   authDomain: "game-hub-972b7.firebaseapp.com",
@@ -17,13 +17,13 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 
-// Initialize Firebase Authentication and get a reference to the service
+// Initialize Firebase Authentication 
 export const auth = getAuth(app)
 
-// Initialize Cloud Firestore and get a reference to the service
+// Initialize Firestore
 export const db = getFirestore(app)
 
-// Initialize Analytics (only in browser environment)
+// Initialize Analytics
 export const analytics = typeof window !== "undefined" ? getAnalytics(app) : null
 
 export default app

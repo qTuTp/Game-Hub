@@ -19,7 +19,6 @@ interface DealFavoriteButtonProps {
     storeUrl: string
     image: string
     rating: number
-    endDate: string
     genre: string
     drm: string
     totalDeals: number
@@ -65,7 +64,6 @@ export function DealFavoriteButton({ deal, className = "" }: DealFavoriteButtonP
           storeUrl: deal.storeUrl,
           image: deal.image,
           rating: deal.rating,
-          endDate: deal.endDate,
           genre: deal.genre,
           drm: deal.drm,
           totalDeals: deal.totalDeals,
