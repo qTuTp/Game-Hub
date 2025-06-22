@@ -95,7 +95,7 @@ export default function DealsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">Game Deals</h1>
-          <p className="text-gray-300">Find the best deals across all gaming platforms - duplicates removed!</p>
+          <p className="text-gray-300">Find the best deals across all gaming platforms</p>
         </div>
 
         {/* Filters */}
