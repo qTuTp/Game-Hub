@@ -858,7 +858,7 @@ export default function WishlistPage() {
                       <CardContent className="p-4">
                         <CardTitle className="text-white mb-2 line-clamp-1">{deal.title}</CardTitle>
                         <CardDescription className="text-gray-400 mb-3">
-                          {deal.genre} • Ends {new Date(deal.endDate).toLocaleDateString()}
+                          {deal.genre} 
                         </CardDescription>
 
                         <div className="flex items-center justify-between mb-3">
