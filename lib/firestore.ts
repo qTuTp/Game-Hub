@@ -450,7 +450,7 @@ export const getUserFavoriteReviews = async (uid: string): Promise<FavoriteRevie
 
     return querySnapshot.docs.map((doc) => ({
       ...doc.data(),
-      id: doc.id,
+      
     })) as FavoriteReview[]
   } catch (error) {
     console.error("Error getting favorite reviews:", error)
