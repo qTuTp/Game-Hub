@@ -711,20 +711,10 @@ export default function WishlistPage() {
 
                         <div className="flex gap-2">
                           <Button asChild className="flex-1 bg-purple-600 hover:bg-purple-700">
-                            <Link href={`/news/${article.id}`}>Read More</Link>
+                            <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:text-purple-300 transition-colors">
+                              Read More
+                            </a>
                           </Button>
-                          {article.url && (
-                            <Button
-                              asChild
-                              variant="outline"
-                              size="icon"
-                              className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
-                            >
-                              <a href={article.url} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4" />
-                              </a>
-                            </Button>
-                          )}
                         </div>
                       </CardContent>
                     </Card>

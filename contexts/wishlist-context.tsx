@@ -236,7 +236,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         readTime: article.readTime || "",
         category: article.category || "",
         tags: article.tags || [],
-        url: article.url || undefined,
+        url: article.sourceUrl || undefined,
         feedname: article.feedname || undefined,
         feedlabel: article.feedlabel || undefined,
       }

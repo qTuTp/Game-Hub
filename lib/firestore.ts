@@ -55,7 +55,7 @@ export interface FavoriteNewsArticle {
   readTime: string
   category: string
   tags: string[]
-  url?: string
+  sourceUrl?: string
   feedname?: string
   feedlabel?: string
   addedAt: any
@@ -171,7 +171,6 @@ export const getUserWishlist = async (uid: string): Promise<WishlistGame[]> => {
 
     return querySnapshot.docs.map((doc) => ({
       ...doc.data(),
-      id: doc.id,
     })) as WishlistGame[]
   } catch (error) {
     console.error("Error getting wishlist:", error)

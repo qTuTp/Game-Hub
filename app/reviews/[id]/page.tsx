@@ -197,14 +197,7 @@ export default function ReviewDetailPage({ params }: { params: { id: string } })
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <Button variant="ghost" size="sm" className="text-green-400 hover:text-green-300">
-                    <ThumbsUp className="h-4 w-4 mr-1" />
-                    {review.likes}
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
-                    <ThumbsDown className="h-4 w-4 mr-1" />
-                    {review.dislikes}
-                  </Button>
+                
                   {/* Show link to original review if available */}
                   {review.sourceUrl && (
                     <Button
