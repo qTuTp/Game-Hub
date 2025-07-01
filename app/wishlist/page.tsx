@@ -1056,16 +1056,7 @@ export default function WishlistPage() {
                               </Badge>
                             </div>
                             <div className="flex items-center space-x-4">
-                              <div className="flex items-center space-x-2">
-                                <Button variant="ghost" size="sm" className="text-green-400 hover:text-green-300">
-                                  <ThumbsUp className="h-4 w-4 mr-1" />
-                                  {review.likes}
-                                </Button>
-                                <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
-                                  <ThumbsDown className="h-4 w-4 mr-1" />
-                                  {review.dislikes}
-                                </Button>
-                              </div>
+                              
                               <div className="flex gap-2">
                                 <Button asChild className="bg-purple-600 hover:bg-purple-700">
                                   <Link href={`/reviews/${review.id}`}>Read More</Link>
